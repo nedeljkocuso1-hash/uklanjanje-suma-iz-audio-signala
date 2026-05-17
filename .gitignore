@@ -1,0 +1,18 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Audio podaci i dataset (DODAJ OVO)
+raw_data/
+dataset/
+
+# Sačuvani težinski parametri istreniranih modela (DODAJ OVO)
+*.pth
+*.pt
