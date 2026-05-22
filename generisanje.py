@@ -14,6 +14,8 @@ DATA_DIR = os.path.join(BASE_PATH, "raw_data")
 DATASET_DIR = os.path.join(BASE_PATH, "dataset")
 OUTPUT_CLEAN = os.path.join(DATASET_DIR, "clean")
 OUTPUT_NOISY = os.path.join(DATASET_DIR, "noisy")
+OUTPUT_TEST_CLEAN = os.path.join(DATASET_DIR, "test_clean")
+OUTPUT_TEST_NOISY = os.path.join(DATASET_DIR, "test_noisy")
 
 SEGMENT_LEN = 3  # sekunde
 SR = 16000      # kvalitet zvuka
@@ -21,12 +23,13 @@ SR = 16000      # kvalitet zvuka
 def mix_audio(clean_seg, noise_seg, snr_db):
     p_clean = np.mean(clean_seg**2)
     p_noise = np.mean(noise_seg**2)
-    if p_noise == 0: return clean_seg
+    if p_noise == 0: 
+        return clean_seg
     k = np.sqrt(p_clean / (p_noise * (10**(snr_db / 10))))
     return clean_seg + k * noise_seg
 
 # 2. KREIRANJE FOLDERA (Jedan po jedan da izbegnemo WinError 3)
-for d in [DATASET_DIR, OUTPUT_CLEAN, OUTPUT_NOISY]:
+for d in [DATASET_DIR, OUTPUT_CLEAN, OUTPUT_NOISY, OUTPUT_TEST_CLEAN, OUTPUT_TEST_NOISY]:
     if not os.path.exists(d):
         os.makedirs(d, exist_ok=True)
         print(f"Napravljen folder: {d}")
@@ -65,8 +68,31 @@ try:
         
         if (i + 1) % 10 == 0: # Smanjio sam na 10 da brže vidiš progres
             print(f"Procesirano {i + 1}/{num_segments}...")
+    
+    # Generisanje test podataka
+    print("\nUcitavam test.wav za kreiranje test seta")
+    test_audio,_= librosa.load(os.path.join(DATA_DIR, "test.wav"), sr=SR)
+    num_test_segments = len(test_audio) // segment_samples
+    print(f"Generišem {num_test_segments} test primera...")
 
-    print("\nUSPEH! Dataset je spreman.")
+    for i in range(num_test_segments):
+        start= i * segment_samples
+        test_clean_seg=test_audio[start:start + segment_samples]
+
+        n_start = random.randint(0, len(all_noise) - segment_samples)
+        noise_seg=all_noise[n_start:n_start + segment_samples]
+
+        snr = random.uniform(0, 15)
+        test_noisy_seg = mix_audio(test_clean_seg, noise_seg, snr)
+
+        test_filename = f"test_sample_{i:04d}.wav"
+        sf.write(os.path.join(OUTPUT_TEST_CLEAN, test_filename), test_clean_seg, SR)
+        sf.write(os.path.join(OUTPUT_TEST_NOISY, test_filename), test_noisy_seg, SR)
+
+        if (i+1)%10==0:
+            print(f"Test podaci: Procesirano {i+1}/{num_test_segments}...")
+
+    print("\nUSPEH! Dataset i test set su spremani.")
     print(f"Fajlovi su ovde: {DATASET_DIR}")
 
 except Exception as e:
