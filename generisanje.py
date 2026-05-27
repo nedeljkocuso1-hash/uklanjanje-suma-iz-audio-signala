@@ -38,7 +38,7 @@ for d in [DATASET_DIR, OUTPUT_CLEAN, OUTPUT_NOISY, OUTPUT_TEST_CLEAN, OUTPUT_TES
 print("Učitavam fajlove iz raw_data...")
 try:
     # Provera imena fajlova - moraju biti identični kao na slici
-    clean_f_names = ['clean1.wav', 'clean2.wav']
+    clean_f_names = ['clean1.wav', 'clean2.wav', 'clean3.wav']
     noise_f_names = ['sum1.wav', 'sum2.wav']
 
     clean_files = [librosa.load(os.path.join(DATA_DIR, f), sr=SR)[0] for f in clean_f_names]
