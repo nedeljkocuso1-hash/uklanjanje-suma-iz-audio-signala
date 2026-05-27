@@ -1,9 +1,9 @@
+# import shutil
 import librosa
 import numpy as np
 import soundfile as sf
 import os
 import random
-
 # 1. APSOLUTNA PUTANJA (Ključ za Windows greške)
 # Ovo pronalazi gde je PROJEKAT IS na disku
 BASE_PATH = os.path.dirname(os.path.abspath(__file__))
@@ -28,6 +28,14 @@ def mix_audio(clean_seg, noise_seg, snr_db):
     k = np.sqrt(p_clean / (p_noise * (10**(snr_db / 10))))
     return clean_seg + k * noise_seg
 
+
+
+# 2. BRISANJE STAROG DATASETA I KREIRANJE NOVIH FOLDERA
+# for d in [OUTPUT_CLEAN, OUTPUT_NOISY, OUTPUT_TEST_CLEAN, OUTPUT_TEST_NOISY]:
+#    if os.path.exists(d):
+#        shutil.rmtree(d)
+#        print(f"Obrisan stari folder: {d}")
+
 # 2. KREIRANJE FOLDERA (Jedan po jedan da izbegnemo WinError 3)
 for d in [DATASET_DIR, OUTPUT_CLEAN, OUTPUT_NOISY, OUTPUT_TEST_CLEAN, OUTPUT_TEST_NOISY]:
     if not os.path.exists(d):
@@ -39,7 +47,7 @@ print("Učitavam fajlove iz raw_data...")
 try:
     # Provera imena fajlova - moraju biti identični kao na slici
     clean_f_names = ['clean1.wav', 'clean2.wav', 'clean3.wav']
-    noise_f_names = ['sum1.wav', 'sum2.wav']
+    noise_f_names = ['sum1.wav', 'sum2.wav', 'sum3.wav']
 
     clean_files = [librosa.load(os.path.join(DATA_DIR, f), sr=SR)[0] for f in clean_f_names]
     noise_files = [librosa.load(os.path.join(DATA_DIR, f), sr=SR)[0] for f in noise_f_names]
