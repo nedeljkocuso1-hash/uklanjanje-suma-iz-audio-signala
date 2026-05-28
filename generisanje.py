@@ -28,10 +28,10 @@ def mix_audio(clean_seg, noise_seg, snr_db):
 if __name__ == "__main__":
 
     # Briše stari dataset
-    #for d in [OUTPUT_CLEAN, OUTPUT_NOISY, OUTPUT_TEST_CLEAN, OUTPUT_TEST_NOISY]:
-    #    if os.path.exists(d):
-    #        shutil.rmtree(d)
-    #        print(f"Obrisan stari folder: {d}")
+    for d in [OUTPUT_CLEAN, OUTPUT_NOISY, OUTPUT_TEST_CLEAN, OUTPUT_TEST_NOISY]:
+        if os.path.exists(d):
+            shutil.rmtree(d)
+            print(f"Obrisan stari folder: {d}")
 
     for d in [DATASET_DIR, OUTPUT_CLEAN, OUTPUT_NOISY, OUTPUT_TEST_CLEAN, OUTPUT_TEST_NOISY]:
         if not os.path.exists(d):
